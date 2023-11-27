@@ -12,10 +12,10 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(0, 0, -1);
-	m_Position = glm::vec3(0, 0, 3);
+	m_Position = glm::vec3(0, 0, 5);
 }
 
-void Camera::OnUpdate(float ts)
+bool Camera::OnUpdate(float ts)
 {
 	glm::vec2 mousePos = Input::GetMousePosition();
 	// to-do : * 0.002f ?
@@ -25,7 +25,7 @@ void Camera::OnUpdate(float ts)
 	if (!Input::IsMouseButtonDown(MouseButton::Right))
 	{
 		Input::SetCursorMode(CursorMode::Normal);
-		return;
+		return false;
 	}
 
 	Input::SetCursorMode(CursorMode::Locked);
@@ -87,7 +87,7 @@ void Camera::OnUpdate(float ts)
 		RecalculateView();
 		RecalculateRayDirections();
 	}
-
+	return moved;
 }
 
 void Camera::OnResize(uint32_t width, uint32_t height)
@@ -122,7 +122,7 @@ void Camera::RecalculateView()
 
 void Camera::RecalculateRayDirections()
 {
-	m_RayDirections.resize(m_ViewportWidth * m_ViewportHeight);
+	m_RayDirections.resize((size_t)m_ViewportWidth * m_ViewportHeight);
 
 	for (uint32_t y = 0; y < m_ViewportHeight; ++y)
 	{
@@ -134,7 +134,7 @@ void Camera::RecalculateRayDirections()
 			glm::vec4 target = m_InverseProjection * glm::vec4(coord.x, coord.y, 1, 1);
 			// View(Camera) To World
 			glm::vec3 rayDirection = glm::vec3(m_InverseView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0));
-			m_RayDirections[x + y * m_ViewportWidth] = rayDirection;
+			m_RayDirections[x + y * (size_t)m_ViewportWidth] = rayDirection;
 		}
 	}
 }
