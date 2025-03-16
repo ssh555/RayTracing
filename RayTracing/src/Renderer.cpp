@@ -44,10 +44,8 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 	{
 		memset(m_AccumulationData, 0, (size_t)m_FinalImage->GetWidth() * m_FinalImage->GetHeight() * sizeof(glm::vec4));
 	}
-
 	// render every pixel
-#define MT 1
-#if MT
+#if true
 	// 当前设备可以创建的线程数(core)
 	//std::thread::hardware_concurrency();
 	// 从 C++17 开始可以单线程执行，也可以多线程执行
@@ -151,7 +149,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y)
 		if (payLoad.HitDistance < 0.0f)
 		{
 			glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
-			light += skyColor * throughput;
+			//light += skyColor * throughput;
 			break;
 		}
 
